@@ -1,0 +1,24 @@
+resources:
+- repo: self
+queue:
+  name: Hosted Ubuntu 1604
+variables:
+  Docker.DockerfileFolder: 'src/APIGateway'
+  Docker.ImageName: 'pitstop/apigateway'
+steps:
+- task: Docker@1
+  displayName: 'Build an image'
+  inputs:
+    azureSubscriptionEndpoint: 'Visual Studio Enterprise (0ca87f85-6464-495f-bbfb-a209f07565b7)'
+    azureContainerRegistry: chaopsregistrysimondel.azurecr.io
+    dockerFile: '$(Docker.DockerfileFolder)/Dockerfile'
+    imageName: '$(Docker.ImageName):$(Build.BuildId)'
+    includeLatestTag: true
+
+- task: Docker@1
+  displayName: 'Push latest image'
+  inputs:
+    azureSubscriptionEndpoint: 'Visual Studio Enterprise (0ca87f85-6464-495f-bbfb-a209f07565b7)'
+    azureContainerRegistry: chaopsregistrysimondel.azurecr.io
+    command: 'Push an image'
+    imageName: '$(Docker.ImageName):latest'
